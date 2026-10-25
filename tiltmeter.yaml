@@ -1,0 +1,15 @@
+# Tiltmeter for Ticket Triage.
+version: 1
+
+subscriptions:
+  # The OpenAPI spec the Anthropic SDKs are generated from: the latest one the Python SDK
+  # names, compared first with the one from when this code was written (November 2024).
+  - openapi: https://storage.googleapis.com/stainless-sdk-openapi-specs/anthropic/anthropic-465bff21a179090915396565d1ae8f705cf8596e2ec920eb121072f25b8a7d68.yml
+    baseline: https://storage.googleapis.com/stainless-sdk-openapi-specs/anthropic-bcf4ba8fcea38089a259c148cdedd0154fa6b4a280c022abf4a038192835cefd.yml
+    provider: api.anthropic.com
+
+llm:
+  enabled: false
+
+fix:
+  agent: claude-code
