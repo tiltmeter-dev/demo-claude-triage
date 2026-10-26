@@ -30,7 +30,12 @@ def ask(system: str, prompt: str, *, max_tokens: int = 64) -> str:
     )
     stop_reason = response["stop_reason"]
     if stop_reason in ("end_turn", "stop_sequence"):
-        return response["content"][0]["text"].strip()
-    if stop_reason == "max_tokens":
+        # Other block types (thinking, server_tool_use, ...) may now precede the text.
+        for block in response["content"]:
+            if block.get("type") == "text":
+                return block["text"].strip()
+        raise ValueError("no text block in response content")
+    if stop_reason in ("max_tokens", "model_context_window_exceeded"):
         raise TruncatedAnswer(prompt[:40])
-    raise ValueError(f"unexpected stop_reason {stop_reason!r}")  # tool_use: no tools here
+    # tool_use: no tools here; pause_turn and refusal are not handled either
+    raise ValueError(f"unexpected stop_reason {stop_reason!r}")
